@@ -22,11 +22,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  /// 轮播网络图片
+  /// 自动轮播网络图片
   List<Widget> _urls = List<Widget>();
 
-  /// 轮播本地图片
+  /// 自动轮播本地图片
   List<Widget> _paths = List<Widget>();
+
+  /// 手动轮播GridView
+  List<Widget> _gridView = List<Widget>();
 
   @override
   void initState() {
@@ -51,6 +54,10 @@ class _MyHomePageState extends State<MyHomePage> {
     _paths.add(createImageByPath('images/a7x.png'));
     _paths.add(createImageByPath('images/a8y.png'));
     _paths.add(createImageByPath('images/a9z.png'));
+
+    /// 初始化GridView
+    _gridView.add(createGridView());
+    _gridView.add(createGridView());
     super.initState();
   }
 
@@ -63,7 +70,10 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           children: <Widget>[
-            Text('轮播网络图片', style: TextStyle(fontSize: 18),),
+            Text(
+              '自动轮播网络图片',
+              style: TextStyle(fontSize: 18),
+            ),
             Container(
               color: Color(0xFFDCDCDC),
               child: BannerViewWidget(
@@ -71,11 +81,26 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               height: 120,
             ),
-            Text('轮播本地图片', style: TextStyle(fontSize: 18),),
+            Text(
+              '自动轮播本地图片',
+              style: TextStyle(fontSize: 18),
+            ),
             Container(
               color: Color(0xFFDCDCDC),
               child: BannerViewWidget(
                 items: _paths,
+              ),
+              height: 120,
+            ),
+            Text(
+              '手动轮播GridView',
+              style: TextStyle(fontSize: 18),
+            ),
+            Container(
+              color: Color(0xFFDCDCDC),
+              child: BannerViewWidget(
+                items: _gridView,
+                isRun: false,
               ),
               height: 120,
             ),
@@ -85,6 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  /// 根据url地址创建image
   Image createImageByUrl(String url) {
     return Image.network(
       url,
@@ -92,10 +118,31 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  /// 根据path路径创建image
   Image createImageByPath(String path) {
     return Image.asset(
       path,
-      fit: BoxFit.none,
+      fit: BoxFit.fill,
+    );
+  }
+
+  /// 创建GridView
+  GridView createGridView() {
+    return GridView.extent(
+      padding: EdgeInsets.all(10),
+      maxCrossAxisExtent: 50,
+      crossAxisSpacing: 60,
+      mainAxisSpacing: 20,
+      children: <Widget>[
+        createImageByPath('images/a70.png'),
+        createImageByPath('images/a71.png'),
+        createImageByPath('images/a72.png'),
+        createImageByPath('images/a73.png'),
+        createImageByPath('images/a74.png'),
+        createImageByPath('images/a75.png'),
+        createImageByPath('images/a76.png'),
+        createImageByPath('images/a77.png'),
+      ],
     );
   }
 }

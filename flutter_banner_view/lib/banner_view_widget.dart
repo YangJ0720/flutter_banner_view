@@ -4,9 +4,29 @@ import 'package:flutter/material.dart';
 
 /// 广告轮播器
 class BannerViewWidget extends StatefulWidget {
+  /// 广告轮播页面集合
   final List<Widget> items;
 
-  const BannerViewWidget({Key key, this.items}) : super(key: key);
+  /// 广告轮播时间间隔
+  final int delayTime;
+
+  /// 广告轮播动画
+  final Curve curve;
+
+  /// 广告轮播动画时长
+  final int duration;
+
+  /// 广告轮播自动轮播是否启用
+  final bool isRun;
+
+  const BannerViewWidget(
+      {Key key,
+      @required this.items,
+      this.delayTime = 5000,
+      this.curve = Curves.linear,
+      this.duration = 200,
+      this.isRun = true})
+      : super(key: key);
 
   /// 获取广告轮播页数
   int getRealCount() {
@@ -44,14 +64,16 @@ class BannerViewState extends State<BannerViewWidget> {
     _realCount = widget.getRealCount();
     _childCount = _realCount * 2;
     _controller = PageController(initialPage: _realCount);
-    if (_timer == null) {
-      _timer = Timer.periodic(Duration(milliseconds: 5000), (_timer) {
+    if (_timer == null && widget.isRun) {
+      _timer =
+          Timer.periodic(Duration(milliseconds: widget.delayTime), (_timer) {
         if (isTouch) {
           return;
         }
         _currentPage++;
         _controller.nextPage(
-            duration: Duration(milliseconds: 200), curve: Curves.fastOutSlowIn);
+            duration: Duration(milliseconds: widget.duration),
+            curve: widget.curve);
       });
     }
     super.initState();
@@ -73,10 +95,10 @@ class BannerViewState extends State<BannerViewWidget> {
       onPointerDown: (event) {
         isTouch = true;
       },
-      onPointerMove: (event){
+      onPointerMove: (event) {
         isTouch = true;
       },
-      onPointerUp: (event){
+      onPointerUp: (event) {
         isTouch = false;
       },
       onPointerCancel: (event) {
@@ -114,7 +136,7 @@ class BannerViewState extends State<BannerViewWidget> {
     );
   }
 
-  /// 创建指示器
+  /// 创建广告轮播指示器
   Widget createIndicator() {
     List<Widget> _list = [];
     for (int i = 0; i < _realCount; i++) {
@@ -150,8 +172,10 @@ class BannerViewState extends State<BannerViewWidget> {
 
   @override
   void dispose() {
-    _timer.cancel();
-    _timer = null;
+    if (_timer != null) {
+      _timer.cancel();
+      _timer = null;
+    }
     super.dispose();
   }
 }
